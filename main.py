@@ -22,16 +22,18 @@ def compare_cnpj(cnpj: str, entry_file_name: str):
         
 
 def compare_cnpj_in_all_files(folder_name: str, cnpj: str):
-    response = True
     for file_name in listdir(folder_name):
-        if file_name.endswith('.xml'):
-            if not compare_cnpj(cnpj, file_name):
-                response = False
-                break
+        if file_name.endswith('.xml') and not compare_cnpj(cnpj, file_name):
+            rmtree(cnpj)
+            raise HTTPException(status_code=400, detail="cnpj dont's match!")
         else:
             rmtree(cnpj)
             raise HTTPException(status_code=400, detail="all files must be xml!")
-    return response
+
+
+def unzip_file(file, cnpj: str):
+    with zipfile.ZipFile(file, 'r') as zip_ref:
+        zip_ref.extractall(cnpj)
 
 
 @app.get("/")
@@ -48,11 +50,8 @@ async def xml_test(upload_file: UploadFile = None, cnpj: str = Header(...)):
         return doc
     if upload_file.filename.endswith('.zip'):
         mkdir(cnpj)
-        with zipfile.ZipFile(upload_file.file, 'r') as zip_ref:
-            zip_ref.extractall(cnpj)
-        if not compare_cnpj_in_all_files(cnpj, cnpj):
-            rmtree(cnpj)
-            raise HTTPException(status_code=400, detail="cnpj dont's match!")
+        unzip_file(upload_file.file, cnpj)
+        compare_cnpj_in_all_files(cnpj, cnpj)
         rmtree(cnpj)
         return {"detail": "All cnpj matchs!"}
     else:
