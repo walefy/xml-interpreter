@@ -7,21 +7,30 @@ import xmltodict
 app = FastAPI()
 
 
+def get_nested_value(list_key: tuple[str, ...], entry_dict: dict):
+    response = entry_dict.copy()
+
+    for key in list_key:
+        if isinstance(response, dict):
+            response = response.get(key, {})
+        else:
+            raise ValueError(f'Key {key} not found')
+
+    return response
+
+
 def compare_cnpj(cnpj: str, entry_file_name: str):
     with open(f'{cnpj}/{entry_file_name}', 'r') as file:
-        response = xmltodict.parse(file.read())
         list_key = ('nfeProc', 'NFe', 'infNFe', 'emit', 'CNPJ')
+        xml_in_dict = xmltodict.parse(file.read())
 
-        for key in list_key:
-            if isinstance(response, dict):
-                response = response.get(key, {})
-
-            else:
-                rmtree(cnpj)
-                raise HTTPException(
-                    status_code=400, detail=f"The xml file {file} is not valid!")
-
-        return response == cnpj
+        try:
+            response = get_nested_value(list_key, xml_in_dict)
+            return response == cnpj
+        except ValueError:
+            rmtree(cnpj)
+            raise HTTPException(
+                status_code=400, detail=f"The xml file {file} is not valid!")
 
 
 def compare_cnpj_in_all_files(folder_name: str, cnpj: str):
