@@ -30,19 +30,24 @@ def compare_cnpj(cnpj: str, entry_file_name: str):
         except ValueError:
             rmtree(cnpj)
             raise HTTPException(
-                status_code=400, detail=f"The xml file {file} is not valid!")
+                status_code=400, detail=f'The xml file {file} is not valid!')
 
 
 def compare_cnpj_in_all_files(folder_name: str, cnpj: str):
+    errors_file_list = []
+
     for file_name in listdir(folder_name):
         if not file_name.endswith('.xml'):
             rmtree(cnpj)
             raise HTTPException(
-                status_code=400, detail="all files must be xml!")
+                status_code=400, detail='all files must be xml!')
 
         if not compare_cnpj(cnpj, file_name):
-            rmtree(cnpj)
-            raise HTTPException(status_code=400, detail="cnpj dont's match!")
+            errors_file_list.append(file_name)
+    if len(errors_file_list) > 0:
+        rmtree(cnpj)
+        raise HTTPException(
+            status_code=400, detail={ 'message': 'The CNPJ is not match!', 'files': errors_file_list })
 
 
 def unzip_file(file, cnpj: str):
@@ -50,15 +55,15 @@ def unzip_file(file, cnpj: str):
         zip_ref.extractall(cnpj)
 
 
-@app.get("/")
+@app.get('/')
 async def root():
-    return {"message": "Hello World"}
+    return {'message': 'Hello World'}
 
 
 @app.post('/xmltest')
 async def xml_test(upload_file: UploadFile = None, cnpj: str = Header(...)):
     if upload_file is None:
-        raise HTTPException(status_code=400, detail="xml file not found!")
+        raise HTTPException(status_code=400, detail='xml file not found!')
 
     if upload_file.filename.endswith('.xml'):
         doc = xmltodict.parse(upload_file.file.read())
@@ -69,7 +74,7 @@ async def xml_test(upload_file: UploadFile = None, cnpj: str = Header(...)):
         unzip_file(upload_file.file, cnpj)
         compare_cnpj_in_all_files(folder_name=cnpj, cnpj=cnpj)
         rmtree(cnpj)
-        return {"detail": "All cnpj match!"}
+        return {'detail': 'All CNPJ match!'}
 
     else:
-        raise HTTPException(status_code=400, detail="xml file not found!")
+        raise HTTPException(status_code=400, detail='xml file not found!')
