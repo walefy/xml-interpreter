@@ -35,14 +35,14 @@ def compare_cnpj(cnpj: str, entry_file_name: str):
 
 def compare_cnpj_in_all_files(folder_name: str, cnpj: str):
     for file_name in listdir(folder_name):
-        if file_name.endswith('.xml') and not compare_cnpj(cnpj, file_name):
-            rmtree(cnpj)
-            raise HTTPException(status_code=400, detail="cnpj dont's match!")
-
-        else:
+        if not file_name.endswith('.xml'):
             rmtree(cnpj)
             raise HTTPException(
                 status_code=400, detail="all files must be xml!")
+
+        if not compare_cnpj(cnpj, file_name):
+            rmtree(cnpj)
+            raise HTTPException(status_code=400, detail="cnpj dont's match!")
 
 
 def unzip_file(file, cnpj: str):
