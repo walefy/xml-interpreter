@@ -25,8 +25,8 @@ def compare_cnpj(cnpj: str, entry_file_name: str):
         xml_in_dict = xmltodict.parse(file.read())
 
         try:
-            response = get_nested_value(list_key, xml_in_dict)
-            return response == cnpj
+            response_cnpj = get_nested_value(list_key, xml_in_dict)
+            return response_cnpj == cnpj
         except ValueError:
             rmtree(cnpj)
             raise HTTPException(
