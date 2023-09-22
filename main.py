@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Header, UploadFile, HTTPException
 from shutil import rmtree
-from os import mkdir
+from os import mkdir, path
 import xmltodict
 
 from utils import unzip_file
@@ -19,7 +19,7 @@ async def clean_folder(request, call_next):
     dir_name = request.headers.get("cnpj")
     response = await call_next(request)
 
-    if dir_name:
+    if dir_name and path.exists(dir_name):
         rmtree(dir_name)
         print('folder deleted!')
 
