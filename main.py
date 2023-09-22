@@ -22,7 +22,7 @@ async def clean_folder(request, call_next):
 
 @app.get('/')
 async def root():
-    return {'message': 'Hello World'}
+    return {'message': 'Hello World!'}
 
 
 @app.post('/xmltest')
