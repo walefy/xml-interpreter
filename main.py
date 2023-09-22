@@ -9,11 +9,6 @@ from validations import compare_cnpj_in_all_files, verify_sequence
 app = FastAPI()
 
 
-@app.get('/')
-async def root():
-    return {'message': 'Hello World'}
-
-
 @app.middleware('http')
 async def clean_folder(request, call_next):
     dir_name = request.headers.get("cnpj")
@@ -21,9 +16,13 @@ async def clean_folder(request, call_next):
 
     if dir_name and path.exists(dir_name):
         rmtree(dir_name)
-        print('folder deleted!')
 
     return response
+
+
+@app.get('/')
+async def root():
+    return {'message': 'Hello World'}
 
 
 @app.post('/xmltest')
