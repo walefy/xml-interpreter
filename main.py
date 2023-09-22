@@ -1,63 +1,41 @@
 from fastapi import FastAPI, Header, UploadFile, HTTPException
-from os import mkdir, listdir
 from shutil import rmtree
-import zipfile
+from os import mkdir, path
 import xmltodict
+
+from utils import unzip_file
+from validations import compare_cnpj_in_all_files, verify_sequence
+from db import database, owner
+
 
 app = FastAPI()
 
 
-def get_nested_value(list_key: tuple[str, ...], entry_dict: dict):
-    response = entry_dict.copy()
+@app.on_event("startup")
+async def startup():
+    await database.connect()
 
-    for key in list_key:
-        if isinstance(response, dict):
-            response = response.get(key, {})
-        else:
-            raise ValueError(f'Key {key} not found')
+
+@app.on_event("shutdown")
+async def shutdown():
+    await database.disconnect()
+
+
+@app.middleware('http')
+async def clean_folder(request, call_next):
+    dir_name = request.headers.get("cnpj")
+    response = await call_next(request)
+
+    if dir_name and path.exists(dir_name):
+        rmtree(dir_name)
 
     return response
 
 
-def compare_cnpj(cnpj: str, entry_file_name: str):
-    with open(f'{cnpj}/{entry_file_name}', 'r') as file:
-        list_key = ('nfeProc', 'NFe', 'infNFe', 'emit', 'CNPJ')
-        xml_in_dict = xmltodict.parse(file.read())
-
-        try:
-            response_cnpj = get_nested_value(list_key, xml_in_dict)
-            return response_cnpj == cnpj
-        except ValueError:
-            rmtree(cnpj)
-            raise HTTPException(
-                status_code=400, detail=f'The xml file {file} is not valid!')
-
-
-def compare_cnpj_in_all_files(folder_name: str, cnpj: str):
-    errors_file_list = []
-
-    for file_name in listdir(folder_name):
-        if not file_name.endswith('.xml'):
-            rmtree(cnpj)
-            raise HTTPException(
-                status_code=400, detail='all files must be xml!')
-
-        if not compare_cnpj(cnpj, file_name):
-            errors_file_list.append(file_name)
-    if len(errors_file_list) > 0:
-        rmtree(cnpj)
-        raise HTTPException(
-            status_code=400, detail={ 'message': 'The CNPJ is not match!', 'files': errors_file_list })
-
-
-def unzip_file(file, cnpj: str):
-    with zipfile.ZipFile(file, 'r') as zip_ref:
-        zip_ref.extractall(cnpj)
-
-
 @app.get('/')
 async def root():
-    return {'message': 'Hello World'}
+    query = owner.select()
+    return await database.fetch_all(query)
 
 
 @app.post('/xmltest')
@@ -73,7 +51,7 @@ async def xml_test(upload_file: UploadFile = None, cnpj: str = Header(...)):
         mkdir(cnpj)
         unzip_file(upload_file.file, cnpj)
         compare_cnpj_in_all_files(folder_name=cnpj, cnpj=cnpj)
-        rmtree(cnpj)
+        verify_sequence(cnpj)
         return {'detail': 'All CNPJ match!'}
 
     else:
