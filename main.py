@@ -18,32 +18,38 @@ def get_nested_value(list_key: tuple[str, ...], entry_dict: dict):
 
     return response
 
+
 def verify_sequence(folder_name: str):
     sequence_dict = {}
     serie_keys = ('nfeProc', 'NFe', 'infNFe', 'ide')
     missing_invoices = []
+
     for file_name in listdir(folder_name):
         with open(f'{folder_name}/{file_name}', 'r') as file:
             xml_in_dict = xmltodict.parse(file.read())
             ide = get_nested_value(serie_keys, xml_in_dict)
             serie = ide.get('serie')
             invoice_number = ide.get('nNF')
+
             if serie not in sequence_dict:
                 sequence_dict[serie] = [int(invoice_number)]
+
             else:
                 sequence_dict[serie].append(int(invoice_number))
+
     for serie in sequence_dict:
         sequence_dict[serie].sort()
+
         for index in range(len(sequence_dict[serie]) - 1):
             if sequence_dict[serie][index] + 1 != sequence_dict[serie][index + 1]:
                 for gap_index in range(sequence_dict[serie][index] + 1, sequence_dict[serie][index + 1]):
-                    missing_invoices.append({ 'serie': serie, 'invoice_number': gap_index })
+                    missing_invoices.append(
+                        {'serie': serie, 'invoice_number': gap_index})
+
     if len(missing_invoices) > 0:
         rmtree(folder_name)
         raise HTTPException(
-            status_code=400, detail={ 'message': 'There are missing invoices!', 'missing_invoices': missing_invoices })
-
-        
+            status_code=400, detail={'message': 'There are missing invoices!', 'missing_invoices': missing_invoices})
 
 
 def compare_cnpj(cnpj: str, entry_file_name: str):
@@ -74,7 +80,7 @@ def compare_cnpj_in_all_files(folder_name: str, cnpj: str):
     if len(errors_file_list) > 0:
         rmtree(cnpj)
         raise HTTPException(
-            status_code=400, detail={ 'message': 'The CNPJ is not match!', 'files': errors_file_list })
+            status_code=400, detail={'message': 'The CNPJ is not match!', 'files': errors_file_list})
 
 
 def unzip_file(file, cnpj: str):
