@@ -49,7 +49,12 @@ def verify_sequence(folder_name: str):
     if len(missing_invoices) > 0:
         rmtree(folder_name)
         raise HTTPException(
-            status_code=400, detail={'message': 'There are missing invoices!', 'missing_invoices': missing_invoices})
+            status_code=400,
+            detail={
+                'message': 'There are missing invoices!',
+                'missing_invoices': missing_invoices
+            }
+        )
 
 
 def compare_cnpj(cnpj: str, entry_file_name: str):
