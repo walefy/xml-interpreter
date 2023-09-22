@@ -5,8 +5,20 @@ import xmltodict
 
 from utils import unzip_file
 from validations import compare_cnpj_in_all_files, verify_sequence
+from db import database, owner
+
 
 app = FastAPI()
+
+
+@app.on_event("startup")
+async def startup():
+    await database.connect()
+
+
+@app.on_event("shutdown")
+async def shutdown():
+    await database.disconnect()
 
 
 @app.middleware('http')
@@ -22,7 +34,8 @@ async def clean_folder(request, call_next):
 
 @app.get('/')
 async def root():
-    return {'message': 'Hello World!'}
+    query = owner.select()
+    return await database.fetch_all(query)
 
 
 @app.post('/xmltest')

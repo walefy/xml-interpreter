@@ -3,33 +3,36 @@ version: "3"
 services:
   fastapi:
     build: .
+    networks:
+      - net_test
     ports:
       - "8000:8000"
     container_name: 'fastApi_test'
     restart: always
+    volumes:
+      - .:/app
+    depends_on:
+      - postgres
 
-# subir um nginx como balanceador de carga
-#  nginx:
-#    image: nginx:latest
-#    ports:
-#      - "80:80"
-#    container_name: 'nginx_test'
-#    restart: always
-#    depends_on:
-#      - fastapi
-#    volumes:
-#      - ./nginx.conf:/etc/nginx/nginx.conf
+  postgres:
+    image: postgres:latest
+    networks:
+      - net_test
+    ports:
+      - "5432:5432"
+    container_name: 'postgres_test'
+    restart: always
+    volumes:
+      - postgres_db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_SERVER=localhost
 
-# subir um postgres como banco de dados
-#  postgres:
-#    image: postgres:latest
-#    ports:
-#      - "5432:5432"
-#    container_name: 'postgres_test'
-#    restart: always
-#    environment:
-#      - POSTGRES_USER=postgres
-#      - POSTGRES_PASSWORD=postgres
-#      - POSTGRES_DB=postgres
-#    volumes:
-#      - ./postgres_data:/var/lib/postgresql/data
+volumes:
+  postgres_db: { name: postgres_db }
+
+networks:
+  net_test:
+    driver: bridge
