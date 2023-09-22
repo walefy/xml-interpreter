@@ -39,12 +39,18 @@ def verify_sequence(folder_name: str):
 
     for serie in sequence_dict:
         sequence_dict[serie].sort()
+        serie_length = len(sequence_dict[serie])
 
-        for index in range(len(sequence_dict[serie]) - 1):
-            if sequence_dict[serie][index] + 1 != sequence_dict[serie][index + 1]:
-                for gap_index in range(sequence_dict[serie][index] + 1, sequence_dict[serie][index + 1]):
-                    missing_invoices.append(
-                        {'serie': serie, 'invoice_number': gap_index})
+        for index in range(serie_length - 1):
+            correct_next_number = sequence_dict[serie][index] + 1
+            real_next_number = sequence_dict[serie][index + 1]
+
+            if correct_next_number != real_next_number:
+                for gap_index in range(correct_next_number, real_next_number):
+                    missing_invoices.append({
+                        'serie': serie,
+                        'invoice_number': gap_index
+                    })
 
     if len(missing_invoices) > 0:
         rmtree(folder_name)
@@ -68,7 +74,9 @@ def compare_cnpj(cnpj: str, entry_file_name: str):
         except ValueError:
             rmtree(cnpj)
             raise HTTPException(
-                status_code=400, detail=f'The xml file {file} is not valid!')
+                status_code=400,
+                detail=f'The xml file {file} is not valid!'
+            )
 
 
 def compare_cnpj_in_all_files(folder_name: str, cnpj: str):
@@ -78,14 +86,24 @@ def compare_cnpj_in_all_files(folder_name: str, cnpj: str):
         if not file_name.endswith('.xml'):
             rmtree(cnpj)
             raise HTTPException(
-                status_code=400, detail='all files must be xml!')
+                status_code=400,
+                detail='all files must be xml!'
+            )
 
         if not compare_cnpj(cnpj, file_name):
             errors_file_list.append(file_name)
+
     if len(errors_file_list) > 0:
         rmtree(cnpj)
+        detail_cnpj_not_match = {
+            'message': 'The CNPJ is not match!',
+            'files': errors_file_list
+        }
+
         raise HTTPException(
-            status_code=400, detail={'message': 'The CNPJ is not match!', 'files': errors_file_list})
+            status_code=400,
+            detail=detail_cnpj_not_match
+        )
 
 
 def unzip_file(file, cnpj: str):
