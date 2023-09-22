@@ -43,6 +43,7 @@ def compare_cnpj_in_all_files(folder_name: str, cnpj: str):
             status_code=400,
             detail=detail_cnpj_not_match
         )
+        
 
 
 def verify_sequence(folder_name: str):
@@ -86,3 +87,32 @@ def verify_sequence(folder_name: str):
                 'missing_invoices': missing_invoices
             }
         )
+
+
+def format_date(date: str):
+    date = date.split('T')
+    date = date[0].split('-')
+    return f'{date[2]}/{date[1]}/{date[0]}'
+
+def format_hour(hour: str):
+    hour = hour.split('T')
+    hour = hour[1].split('-')
+    return f'{hour[0]}'
+
+def format_time_zone(time_zone: str):
+    time_zone = time_zone.split('-')
+    return f'{time_zone[0]}'
+
+
+def get_first_and_last_date(folder_name: str):
+    date_keys = ('nfeProc', 'NFe', 'infNFe', 'ide')
+    date_list = []
+
+    for file_name in listdir(folder_name):
+        with open(f'{folder_name}/{file_name}', 'r') as file:
+            xml_in_dict = xmltodict.parse(file.read())
+            date = get_nested_value(date_keys, xml_in_dict).get('dhEmi')
+            date_list.append(date)
+
+    date_list.sort()
+    return date_list[0], date_list[-1]
