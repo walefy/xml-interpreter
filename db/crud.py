@@ -1,6 +1,5 @@
 import databases
 import sqlalchemy
-from sqlalchemy.dialects import postgresql
 from os import environ
 
 from settings import load_env
