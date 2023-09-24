@@ -1,7 +1,7 @@
 import databases
 import sqlalchemy
+from sqlalchemy.dialects import postgresql
 from os import environ
-from pydantic import BaseModel
 
 from settings import load_env
 
@@ -35,14 +35,3 @@ owner = sqlalchemy.Table(
 engine = sqlalchemy.create_engine(
     DATABASE_URL
 )
-
-
-class Pet(BaseModel):
-    id: int
-    name: str
-    description: str
-
-
-class PetIn(BaseModel):
-    name: str
-    description: str
