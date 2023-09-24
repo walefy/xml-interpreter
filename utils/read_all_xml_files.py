@@ -1,5 +1,5 @@
 from os import listdir
-from models import Xml
+from models.xml_models import Xml
 from fastapi import HTTPException
 import xmltodict
 
