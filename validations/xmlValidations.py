@@ -1,37 +1,31 @@
+from io import TextIOWrapper
 from fastapi import HTTPException
 from os import listdir
 import xmltodict
 
 from utils import get_nested_value
+from models import Xml
 
 
-def compare_cnpj(cnpj: str, entry_file_name: str):
-    with open(f'{cnpj}/{entry_file_name}', 'r') as file:
-        list_key = ('nfeProc', 'NFe', 'infNFe', 'emit', 'CNPJ')
-        xml_in_dict = xmltodict.parse(file.read())
+def compare_cnpj(cnpj: str, xml_dict: dict, xml_file_name: str):
+    list_key = ('nfeProc', 'NFe', 'infNFe', 'emit', 'CNPJ')
 
-        try:
-            response_cnpj = get_nested_value(list_key, xml_in_dict)
-            return response_cnpj == cnpj
-        except ValueError:
-            raise HTTPException(
-                status_code=400,
-                detail=f'The xml file {file} is not valid!'
-            )
+    try:
+        response_cnpj = get_nested_value(list_key, xml_dict)
+        return response_cnpj == cnpj
+    except ValueError:
+        raise HTTPException(
+            status_code=400,
+            detail=f'The xml file {xml_file_name} is not valid!'
+        )
 
 
-def compare_cnpj_in_all_files(folder_name: str, cnpj: str):
+def compare_cnpj_in_all_files(xml_list: list[Xml], cnpj: str):
     errors_file_list = []
 
-    for file_name in listdir(folder_name):
-        if not file_name.endswith('.xml'):
-            raise HTTPException(
-                status_code=400,
-                detail='all files must be xml!'
-            )
-
-        if not compare_cnpj(cnpj, file_name):
-            errors_file_list.append(file_name)
+    for xml in xml_list:
+        if not compare_cnpj(cnpj, xml_dict=xml.source, xml_file_name=xml.file_name):
+            errors_file_list.append(xml.file_name)
 
     if len(errors_file_list) > 0:
         detail_cnpj_not_match = {
@@ -45,23 +39,21 @@ def compare_cnpj_in_all_files(folder_name: str, cnpj: str):
         )
 
 
-def verify_sequence(folder_name: str):
+def verify_sequence(xml_list: list[Xml]):
     sequence_dict = {}
     serie_keys = ('nfeProc', 'NFe', 'infNFe', 'ide')
     missing_invoices = []
 
-    for file_name in listdir(folder_name):
-        with open(f'{folder_name}/{file_name}', 'r') as file:
-            xml_in_dict = xmltodict.parse(file.read())
-            ide = get_nested_value(serie_keys, xml_in_dict)
-            serie = ide.get('serie')
-            invoice_number = ide.get('nNF')
+    for xml in xml_list:
+        ide = get_nested_value(serie_keys, xml.source)
+        serie = ide.get('serie')
+        invoice_number = ide.get('nNF')
 
-            if serie not in sequence_dict:
-                sequence_dict[serie] = [int(invoice_number)]
+        if serie not in sequence_dict:
+            sequence_dict[serie] = [int(invoice_number)]
 
-            else:
-                sequence_dict[serie].append(int(invoice_number))
+        else:
+            sequence_dict[serie].append(int(invoice_number))
 
     for serie in sequence_dict:
         sequence_dict[serie].sort()

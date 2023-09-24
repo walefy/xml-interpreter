@@ -2,8 +2,9 @@ from fastapi import FastAPI, Header, UploadFile, HTTPException
 from shutil import rmtree
 from os import mkdir, path
 import xmltodict
+from uuid import uuid4
 
-from utils import unzip_file
+from utils import unzip_file, read_all_xml_files
 from validations import compare_cnpj_in_all_files, verify_sequence
 from db import database, owner
 
@@ -56,8 +57,10 @@ async def xml_test(upload_file: UploadFile = None, cnpj: str = Header(...)):
     if upload_file.filename.endswith('.zip'):
         mkdir(cnpj)
         unzip_file(upload_file.file, cnpj)
-        compare_cnpj_in_all_files(folder_name=cnpj, cnpj=cnpj)
-        verify_sequence(cnpj)
+        xml_file_list = read_all_xml_files(cnpj)
+
+        compare_cnpj_in_all_files(xml_list=xml_file_list, cnpj=cnpj)
+        verify_sequence(xml_list=xml_file_list)
         return {'detail': 'All CNPJ match!'}
 
     else:
