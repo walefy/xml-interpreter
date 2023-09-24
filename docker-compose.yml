@@ -10,7 +10,7 @@ services:
     container_name: 'fastApi_test'
     restart: always
     volumes:
-      - .:/app
+      - .:/app:delegated
     depends_on:
       - postgres
 

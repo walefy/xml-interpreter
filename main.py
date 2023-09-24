@@ -38,6 +38,12 @@ async def root():
     return await database.fetch_all(query)
 
 
+@app.post('/owner')
+async def create_owner(name: str = Header(...)):
+    query = owner.insert(values={'name': name})
+    return await database.execute(query)
+
+
 @app.post('/xmltest')
 async def xml_test(upload_file: UploadFile = None, cnpj: str = Header(...)):
     if upload_file is None:
