@@ -1,10 +1,10 @@
 from os import listdir
-from models.xml_models import Xml
+from models.xml_models import XmlModel
 from fastapi import HTTPException
 import xmltodict
 
 
-def read_all_xml_files(folder_name: str) -> list[Xml]:
+def read_all_xml_files(folder_name: str) -> list[XmlModel]:
     xml_file_list = []
 
     for file_name in listdir(folder_name):
@@ -16,7 +16,7 @@ def read_all_xml_files(folder_name: str) -> list[Xml]:
 
         with open(f'{folder_name}/{file_name}', 'r') as file:
             xml_file_in_dict = xmltodict.parse(file.read())
-            xml_file_list.append(Xml(
+            xml_file_list.append(XmlModel(
                 source=xml_file_in_dict,
                 file_name=file_name
             ))
