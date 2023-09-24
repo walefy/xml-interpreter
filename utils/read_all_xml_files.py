@@ -1,11 +1,9 @@
 from os import listdir
 from models.xml_models import Xml
 from fastapi import HTTPException
-from functools import lru_cache
 import xmltodict
 
 
-@lru_cache(maxsize=32)
 def read_all_xml_files(folder_name: str) -> list[Xml]:
     xml_file_list = []
 
