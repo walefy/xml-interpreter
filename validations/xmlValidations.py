@@ -1,10 +1,7 @@
-from io import TextIOWrapper
 from fastapi import HTTPException
-from os import listdir
-import xmltodict
 
 from utils import get_nested_value
-from models import Xml
+from models.xml_models import Xml
 
 
 def compare_cnpj(cnpj: str, xml_dict: dict, xml_file_name: str):

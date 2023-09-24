@@ -2,7 +2,6 @@ from fastapi import FastAPI, Header, UploadFile, HTTPException
 from shutil import rmtree
 from os import mkdir, path
 import xmltodict
-from uuid import uuid4
 
 from utils import unzip_file, read_all_xml_files
 from validations import compare_cnpj_in_all_files, verify_sequence
