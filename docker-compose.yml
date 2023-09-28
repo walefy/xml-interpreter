@@ -10,9 +10,14 @@ services:
     container_name: 'fastApi_test'
     restart: always
     volumes:
-      - .:/app:delegated
+      - .:/app
     depends_on:
       - postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_SERVER=postgres:5432
 
   postgres:
     image: postgres:latest

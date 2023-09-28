@@ -1,15 +1,11 @@
 import databases
 import sqlalchemy
-from os import environ
+import os
 
-from settings import load_env
-
-load_env()
-
-POSTGRES_USER = environ.get('POSTGRES_USER')
-POSTGRES_PASSWORD = environ.get('POSTGRES_PASSWORD')
-POSTGRES_SERVER = environ.get('POSTGRES_SERVER')
-POSTGRES_DB = environ.get('POSTGRES_DB')
+POSTGRES_USER = os.getenv('POSTGRES_USER')
+POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD')
+POSTGRES_SERVER = os.getenv('POSTGRES_SERVER')
+POSTGRES_DB = os.getenv('POSTGRES_DB')
 
 DATABASE_URL = f'postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}/{POSTGRES_DB}'
 

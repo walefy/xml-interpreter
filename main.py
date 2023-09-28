@@ -8,7 +8,7 @@ from validations import compare_cnpj_in_all_files, verify_sequence
 from db import database, owner
 
 
-app = FastAPI()
+app = FastAPI(title='XML Validator', version='1.0.0')
 
 
 @app.on_event("startup")
