@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 
 from utils import get_nested_value
-from models.xml_models import Xml
+from models.xml_models import XmlModel
 
 
 def compare_cnpj(cnpj: str, xml_dict: dict, xml_file_name: str):
@@ -17,7 +17,7 @@ def compare_cnpj(cnpj: str, xml_dict: dict, xml_file_name: str):
         )
 
 
-def compare_cnpj_in_all_files(xml_list: list[Xml], cnpj: str):
+def compare_cnpj_in_all_files(xml_list: list[XmlModel], cnpj: str):
     errors_file_list = []
 
     for xml in xml_list:
@@ -36,7 +36,7 @@ def compare_cnpj_in_all_files(xml_list: list[Xml], cnpj: str):
         )
 
 
-def verify_sequence(xml_list: list[Xml]):
+def verify_sequence(xml_list: list[XmlModel]):
     sequence_dict = {}
     serie_keys = ('nfeProc', 'NFe', 'infNFe', 'ide')
     missing_invoices = []
