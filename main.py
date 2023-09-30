@@ -2,10 +2,11 @@ from fastapi import FastAPI, Header, UploadFile, HTTPException
 from shutil import rmtree
 from os import path
 import xmltodict
+import json
 
 from utils import unzip_file, read_all_xml_files
 from validations import compare_cnpj_in_all_files, verify_sequence
-from db import database, owner
+from db import database, test_json
 
 
 app = FastAPI(title='XML Validator', version='1.0.0')
@@ -32,16 +33,21 @@ async def clean_folder(request, call_next):
     return response
 
 
-@app.get('/')
-async def root():
-    query = owner.select()
+@app.get('/test/{json_id}')
+async def test(json_id: int):
+    query = test_json.select(whereclause=test_json.c.id == json_id)
+    result = await database.fetch_one(query)
+
+    if result is None:
+        raise HTTPException(status_code=404, detail='not found!')
+
+    return json.loads(result['my_json'])
+
+
+@app.get('/owner')
+async def get_owners():
+    query = test_json.select()
     return await database.fetch_all(query)
-
-
-@app.post('/owner')
-async def create_owner(name: str = Header(...)):
-    query = owner.insert(values={'name': name})
-    return await database.execute(query)
 
 
 @app.post('/xmltest')
@@ -51,6 +57,7 @@ async def xml_test(upload_file: UploadFile = None, cnpj: str = Header(...)):
 
     if upload_file.filename.endswith('.xml'):
         doc = xmltodict.parse(upload_file.file.read())
+        await database.execute(test_json.insert().values(my_json=doc))
         return doc
 
     if upload_file.filename.endswith('.zip'):

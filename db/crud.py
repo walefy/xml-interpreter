@@ -1,5 +1,6 @@
 import databases
 import sqlalchemy
+from sqlalchemy.dialects import postgresql
 import os
 
 POSTGRES_USER = os.getenv('POSTGRES_USER')
@@ -12,21 +13,15 @@ DATABASE_URL = f'postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERV
 database = databases.Database(DATABASE_URL)
 metadata = sqlalchemy.MetaData()
 
-pet = sqlalchemy.Table(
-    "pet",
+test_json = sqlalchemy.Table(
+    'test_json',
     metadata,
-    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
-    sqlalchemy.Column("name", sqlalchemy.String),
-    sqlalchemy.Column("description", sqlalchemy.String),
-)
-
-owner = sqlalchemy.Table(
-    "owner",
-    metadata,
-    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
-    sqlalchemy.Column("name", sqlalchemy.String),
+    sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True),
+    sqlalchemy.Column('my_json', postgresql.JSONB)
 )
 
 engine = sqlalchemy.create_engine(
     DATABASE_URL
 )
+
+metadata.create_all(engine)
