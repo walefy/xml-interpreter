@@ -1,7 +1,8 @@
 from os import listdir
-from models.xml_models import XmlModel
 from fastapi import HTTPException
 import xmltodict
+
+from models.xml_models import XmlModel
 
 
 def read_all_xml_files(folder_name: str) -> list[XmlModel]:

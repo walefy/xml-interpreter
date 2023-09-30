@@ -1,8 +1,7 @@
-from fastapi import FastAPI, Header, UploadFile, HTTPException
+from fastapi import FastAPI, Header, UploadFile, HTTPException, Request
 from shutil import rmtree
 from os import path
 import xmltodict
-import json
 
 from utils import unzip_file, read_all_xml_files
 from validations import compare_cnpj_in_all_files, verify_sequence
@@ -23,7 +22,7 @@ async def shutdown():
 
 
 @app.middleware('http')
-async def clean_folder(request, call_next):
+async def clean_folder(request: Request, call_next):
     dir_name = request.headers.get("cnpj")
     response = await call_next(request)
 
@@ -41,7 +40,7 @@ async def test(json_id: int):
     if result is None:
         raise HTTPException(status_code=404, detail='not found!')
 
-    return json.loads(result['my_json'])
+    return result['my_json']
 
 
 @app.get('/owner')
