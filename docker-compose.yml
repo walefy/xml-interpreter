@@ -9,34 +9,39 @@ services:
       - "8000:8000"
     container_name: 'fastApi_test'
     restart: always
+    env_file:
+      - .env
     volumes:
       - .:/app
     depends_on:
-      - postgres
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
-      - POSTGRES_SERVER=postgres:5432
+      - mongo
 
-  postgres:
-    image: postgres:latest
+  mongo:
+    image: mongo
+    restart: always
     networks:
       - net_test
     ports:
-      - "5432:5432"
-    container_name: 'postgres_test'
-    restart: always
+      - 27017:27017
     volumes:
-      - postgres_db:/var/lib/postgresql/data
+      - mongo_db:/data/db
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
-      - POSTGRES_SERVER=postgres:5432
+      MONGO_INITDB_ROOT_USERNAME: user
+      MONGO_INITDB_ROOT_PASSWORD: pass
+  # mongo-express:
+  #   image: mongo-express
+  #   restart: always
+  #   networks:
+  #     - net_test
+  #   ports:
+  #     - 8081:8081
+  #   environment:
+  #     ME_CONFIG_MONGODB_ADMINUSERNAME: user
+  #     ME_CONFIG_MONGODB_ADMINPASSWORD: pass
+  #     ME_CONFIG_MONGODB_URL: mongodb://user:pass@mongo:27017/
 
 volumes:
-  postgres_db: { name: postgres_db }
+  mongo_db: { name: mongo_db }
 
 networks:
   net_test:
