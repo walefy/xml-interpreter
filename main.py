@@ -1,24 +1,21 @@
-from fastapi import FastAPI, Header, UploadFile, HTTPException, Request
+from fastapi import FastAPI, Header, UploadFile, HTTPException, Request, status
 from shutil import rmtree
 from os import path
 import xmltodict
 
 from utils import unzip_file, read_all_xml_files
-from validations import compare_cnpj_in_all_files, verify_sequence
-from db import database, test_json
-
+from validations import compare_cnpj_in_all_files, verify_sequence, check_duplicates
+from validations import company_existis
+from db.database import init_db
+from crud import insert_nfe
+from models.company import CompanyRegistration, Company
 
 app = FastAPI(title='XML Validator', version='1.0.0')
 
 
 @app.on_event("startup")
 async def startup():
-    await database.connect()
-
-
-@app.on_event("shutdown")
-async def shutdown():
-    await database.disconnect()
+    await init_db()
 
 
 @app.middleware('http')
@@ -32,31 +29,28 @@ async def clean_folder(request: Request, call_next):
     return response
 
 
-@app.get('/test/{json_id}')
-async def test(json_id: int):
-    query = test_json.select(whereclause=test_json.c.id == json_id)
-    result = await database.fetch_one(query)
+@app.post('/profile', status_code=status.HTTP_201_CREATED)
+async def register_company(company_registration: CompanyRegistration):
+    company = Company(
+        fantasy_name=company_registration.fantasy_name,
+        name=company_registration.name,
+        cnpj=company_registration.cnpj,
+        ie=company_registration.ie,
+        crt=company_registration.crt,
+    )
 
-    if result is None:
-        raise HTTPException(status_code=404, detail='not found!')
+    await company.insert()
 
-    return result['my_json']
-
-
-@app.get('/owner')
-async def get_owners():
-    query = test_json.select()
-    return await database.fetch_all(query)
+    return {'detail': f'Company registered with id: {company.name}!'}
 
 
-@app.post('/xmltest')
+@app.post('/xmltest', status_code=status.HTTP_201_CREATED)
 async def xml_test(upload_file: UploadFile = None, cnpj: str = Header(...)):
     if upload_file is None:
         raise HTTPException(status_code=400, detail='xml file not found!')
 
     if upload_file.filename.endswith('.xml'):
         doc = xmltodict.parse(upload_file.file.read())
-        await database.execute(test_json.insert().values(my_json=doc))
         return doc
 
     if upload_file.filename.endswith('.zip'):
@@ -65,6 +59,12 @@ async def xml_test(upload_file: UploadFile = None, cnpj: str = Header(...)):
 
         compare_cnpj_in_all_files(xml_list=xml_file_list, cnpj=cnpj)
         verify_sequence(xml_list=xml_file_list)
+
+        await company_existis(cnpj)
+        await check_duplicates(cnpj, xml_file_list)
+
+        await insert_nfe(cnpj, list_nfe_json=xml_file_list)
+
         return {'detail': 'All CNPJ match!'}
 
     else:

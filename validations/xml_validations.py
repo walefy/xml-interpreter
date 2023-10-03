@@ -2,6 +2,7 @@ from fastapi import HTTPException
 
 from utils import get_nested_value
 from models.xml_models import XmlModel
+from models.company import Company
 
 
 def compare_cnpj(cnpj: str, xml_dict: dict, xml_file_name: str):
@@ -21,7 +22,7 @@ def compare_cnpj_in_all_files(xml_list: list[XmlModel], cnpj: str):
     errors_file_list = []
 
     for xml in xml_list:
-        if not compare_cnpj(cnpj, xml_dict=xml.source, xml_file_name=xml.file_name):
+        if not compare_cnpj(cnpj, xml.source, xml.file_name):
             errors_file_list.append(xml.file_name)
 
     if len(errors_file_list) > 0:
@@ -77,13 +78,28 @@ def verify_sequence(xml_list: list[XmlModel]):
         )
 
 
-def format_date(date: str):
-    date = date.split('T')
-    date = date[0].split('-')
-    return f'{date[2]}/{date[1]}/{date[0]}'
+async def check_duplicates(cnpj: str, xml_list: list[XmlModel]):
+    companies = Company.find({'cnpj': cnpj})
 
+    companies_list = await companies.to_list()
 
-def format_hour(hour: str):
-    hour = hour.split('T')
-    hour = hour[1].split('-')
-    return f'{hour[0]}'
+    company = companies_list[0]
+
+    for xml in xml_list:
+        for nfe in company.nfes:
+            xml_number = int(xml.source['nfeProc']['NFe']['infNFe']['ide']['nNF'])
+            xml_serie = int(xml.source['nfeProc']['NFe']['infNFe']['ide']['serie'])
+            nfe_number = nfe.number
+            nfe_serie = nfe.serie
+
+            if xml_number == nfe_number and xml_serie == nfe_serie:
+                raise HTTPException(
+                    status_code=400,
+                    detail={
+                        'message': 'There are duplicated invoices!',
+                        'duplicated_invoices': {
+                            'number': xml_number,
+                            'serie': xml_serie
+                        }
+                    }
+                )

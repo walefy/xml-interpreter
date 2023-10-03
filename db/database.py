@@ -1,27 +1,10 @@
-import databases
-import sqlalchemy
-from sqlalchemy.dialects import postgresql
-import os
+from beanie import init_beanie
+from motor.motor_asyncio import AsyncIOMotorClient
+from models.company import Company
 
-POSTGRES_USER = os.getenv('POSTGRES_USER')
-POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD')
-POSTGRES_SERVER = os.getenv('POSTGRES_SERVER')
-POSTGRES_DB = os.getenv('POSTGRES_DB')
 
-DATABASE_URL = f'postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}/{POSTGRES_DB}'
+async def init_db():
+    client = AsyncIOMotorClient('mongodb://user:pass@localhost:27017')
+    db = client['x_app']
 
-database = databases.Database(DATABASE_URL)
-metadata = sqlalchemy.MetaData()
-
-test_json = sqlalchemy.Table(
-    'test_json',
-    metadata,
-    sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True),
-    sqlalchemy.Column('my_json', postgresql.JSONB)
-)
-
-engine = sqlalchemy.create_engine(
-    DATABASE_URL
-)
-
-metadata.create_all(engine)
+    await init_beanie(database=db, document_models=[Company])
