@@ -49,10 +49,17 @@ class Company(Document):
     nfes: list[NFE] = []
 
 
+class MissingInvoice(BaseModel):
+    number: int
+    serie: int
+
+
 class CompanyRegistration(BaseModel):
     fantasy_name: str
     name: str
     cnpj: str
     ie: str
     crt: str
+    with_gap: bool = False
+    missing_invoices: list[MissingInvoice] = []
     # address: Address

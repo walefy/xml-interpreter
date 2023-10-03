@@ -37,7 +37,7 @@ def compare_cnpj_in_all_files(xml_list: list[XmlModel], cnpj: str):
         )
 
 
-def verify_sequence(xml_list: list[XmlModel]):
+def verify_sequence_with_gap(xml_list: list[XmlModel], response_dict: dict | None = None):
     sequence_dict = {}
     serie_keys = ('nfeProc', 'NFe', 'infNFe', 'ide')
     missing_invoices = []
@@ -69,11 +69,66 @@ def verify_sequence(xml_list: list[XmlModel]):
                     })
 
     if len(missing_invoices) > 0:
+        if response_dict is None:
+            return True
+        else:
+            response_dict['warnings'].append(
+                {
+                    'message': 'There are missing invoices!',
+                    'missing_invoices': missing_invoices
+                }
+            )
+            return True
+    else:
+        return False
+
+
+def check_duplicates_in_zip(xml_list: list[XmlModel]):
+    nfes = []
+    nfes_duplicated = []
+    for xml in xml_list:
+        nfe_source = xml.source['nfeProc']['NFe']
+        number = nfe_source['infNFe']['ide']['nNF']
+        serie = nfe_source['infNFe']['ide']['serie']
+
+        nfe_dict = {'number': number, 'serie': serie}
+
+        if nfe_dict in nfes:
+            nfes_duplicated.append(nfe_dict)
+        else:
+            nfes.append({'number': number, 'serie': serie})
+
+    if len(nfes_duplicated) > 0:
         raise HTTPException(
             status_code=400,
             detail={
-                'message': 'There are missing invoices!',
-                'missing_invoices': missing_invoices
+                'message': 'There are duplicated invoices in zip!',
+                'duplicated_invoices': nfes_duplicated
+            }
+        )
+
+
+def check_duplicates_in_db(xml_list: list[XmlModel], company: Company):
+    duplicates = []
+    for xml in xml_list:
+        for nfe in company.nfes:
+            xml_number = int(xml.source['nfeProc']['NFe']['infNFe']['ide']['nNF'])
+            xml_serie = int(xml.source['nfeProc']['NFe']['infNFe']['ide']['serie'])
+            nfe_number = nfe.number
+            nfe_serie = nfe.serie
+
+            if xml_number == nfe_number and xml_serie == nfe_serie:
+                duplicates.append({
+                    'number': xml_number,
+                    'serie': xml_serie
+                })
+
+    if len(duplicates) > 0:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                'message': 'There are duplicated invoices in database!',
+                'duplicated_invoices': duplicates
             }
         )
 
@@ -85,21 +140,5 @@ async def check_duplicates(cnpj: str, xml_list: list[XmlModel]):
 
     company = companies_list[0]
 
-    for xml in xml_list:
-        for nfe in company.nfes:
-            xml_number = int(xml.source['nfeProc']['NFe']['infNFe']['ide']['nNF'])
-            xml_serie = int(xml.source['nfeProc']['NFe']['infNFe']['ide']['serie'])
-            nfe_number = nfe.number
-            nfe_serie = nfe.serie
-
-            if xml_number == nfe_number and xml_serie == nfe_serie:
-                raise HTTPException(
-                    status_code=400,
-                    detail={
-                        'message': 'There are duplicated invoices!',
-                        'duplicated_invoices': {
-                            'number': xml_number,
-                            'serie': xml_serie
-                        }
-                    }
-                )
+    check_duplicates_in_zip(xml_list)
+    check_duplicates_in_db(xml_list, company)

@@ -4,8 +4,9 @@ from os import path
 import xmltodict
 
 from utils import unzip_file, read_all_xml_files
-from validations import compare_cnpj_in_all_files, verify_sequence, check_duplicates
-from validations import company_existis
+from validations import compare_cnpj_in_all_files, check_duplicates
+from validations import verify_sequence_with_gap
+from validations import company_exists
 from db.database import init_db
 from crud import insert_nfe
 from models.company import CompanyRegistration, Company
@@ -29,7 +30,7 @@ async def clean_folder(request: Request, call_next):
     return response
 
 
-@app.post('/profile', status_code=status.HTTP_201_CREATED)
+@app.post('/company', status_code=status.HTTP_201_CREATED)
 async def register_company(company_registration: CompanyRegistration):
     company = Company(
         fantasy_name=company_registration.fantasy_name,
@@ -54,18 +55,25 @@ async def xml_test(upload_file: UploadFile = None, cnpj: str = Header(...)):
         return doc
 
     if upload_file.filename.endswith('.zip'):
+        response_dict = {
+            'warnings': [],
+        }
+
         unzip_file(upload_file.file, cnpj)
         xml_file_list = read_all_xml_files(cnpj)
 
         compare_cnpj_in_all_files(xml_list=xml_file_list, cnpj=cnpj)
-        verify_sequence(xml_list=xml_file_list)
+        verify_sequence_with_gap(
+            xml_list=xml_file_list,
+            response_dict=response_dict
+        )
 
-        await company_existis(cnpj)
+        await company_exists(cnpj)
         await check_duplicates(cnpj, xml_file_list)
 
         await insert_nfe(cnpj, list_nfe_json=xml_file_list)
 
-        return {'detail': 'All CNPJ match!'}
+        return response_dict
 
     else:
         raise HTTPException(status_code=400, detail='xml file not found!')

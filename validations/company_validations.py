@@ -2,7 +2,7 @@ from fastapi import HTTPException
 from models.company import Company
 
 
-async def company_existis(cnpj: str):
+async def company_exists(cnpj: str):
     company = Company.find_one({'cnpj': cnpj})
 
     company_count = await company.count()
