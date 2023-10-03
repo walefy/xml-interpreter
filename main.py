@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Header, UploadFile, HTTPException, Request, status
 from fastapi.responses import JSONResponse
 from shutil import rmtree
-from os import path
+from os import path, mkdir
 import xmltodict
 
 from utils import unzip_file, read_all_xml_files
@@ -34,6 +34,9 @@ async def clean_folder(request: Request, call_next):
 @app.exception_handler(HTTPException)
 async def http_exception_handler(_: Request, exc: HTTPException):
     if exc.status_code == 500:
+        if not path.exists('./logs'):
+            mkdir('./logs')
+
         with open('./logs/error_log.txt', 'a') as f:
             f.write(exc.detail + '\n')
 
