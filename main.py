@@ -53,17 +53,30 @@ async def http_exception_handler(_: Request, exc: HTTPException):
 
 @app.post('/company', status_code=status.HTTP_201_CREATED)
 async def register_company(company_registration: CompanyRegistration):
-    company = Company(
-        fantasy_name=company_registration.fantasy_name,
-        name=company_registration.name,
-        cnpj=company_registration.cnpj,
-        ie=company_registration.ie,
-        crt=company_registration.crt,
-    )
+    try:
+        company_with_same_cnpj = Company.find_one({'cnpj': company_registration.cnpj})
+        company_with_same_cnpj_count = await company_with_same_cnpj.count()
 
-    await company.insert()
+        if company_with_same_cnpj_count > 0:
+            raise HTTPException(status_code=400, detail='Company already registered!')
 
-    return {'detail': f'Company registered with id: {company.name}!'}
+        company = Company(
+            fantasy_name=company_registration.fantasy_name,
+            name=company_registration.name,
+            cnpj=company_registration.cnpj,
+            ie=company_registration.ie,
+            crt=company_registration.crt,
+        )
+
+        await company.insert()
+
+        return {'detail': f'Company registered with name: {company.name}!'}
+
+    except HTTPException as http_error:
+        raise http_error
+
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=str(error))
 
 
 @app.post('/xmltest', status_code=status.HTTP_201_CREATED)

@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Any, Optional
 from beanie import Document
+from typing import Literal
 
 
 class Address(BaseModel):
@@ -45,7 +46,7 @@ class Company(Document):
     cnpj: str
     # address: Address
     ie: str
-    crt: str  # TODO: Deixar opções pre definidas aqui.
+    crt: Literal['Simples Nacional', 'Lucro Presumido', 'Lucro Real']
     nfes: list[NFE] = []
 
 

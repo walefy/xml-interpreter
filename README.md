@@ -22,4 +22,12 @@ Tornar o sistema auditável.
 
 - [ ] - Escrever testes para o sistema.
 
+```text
+Documentando a API
+```
+
+- [ ] - Adicionar tags nas rotas
+
+- [ ] - Escrever um readme explicando os Schemas
+
 ## Regras de projeto
