@@ -26,8 +26,10 @@ Tornar o sistema auditável.
 Documentando a API
 ```
 
-- [ ] - Adicionar tags nas rotas
+- [ ] - Adicionar tags nas rotas.
 
-- [ ] - Escrever um readme explicando os Schemas
+- [ ] - Criar uma class schema para a resposta, isso implica em padronizar a resposta dos endpoints.
+
+- [ ] - Escrever um readme explicando os Schemas.
 
 ## Regras de projeto
