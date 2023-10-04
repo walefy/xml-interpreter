@@ -54,11 +54,10 @@ async def http_exception_handler(_: Request, exc: HTTPException):
 @app.post('/company', status_code=status.HTTP_201_CREATED)
 async def register_company(company_registration: CompanyRegistration):
     try:
-        company_with_same_cnpj = Company.find_one({'cnpj': company_registration.cnpj})
-        company_with_same_cnpj_count = await company_with_same_cnpj.count()
-
-        if company_with_same_cnpj_count > 0:
-            raise HTTPException(status_code=400, detail='Company already registered!')
+        if await company_exists(company_registration.cnpj):
+            raise HTTPException(status_code=400, detail={
+                'message': 'This CNPJ already registered!'
+            })
 
         company = Company(
             fantasy_name=company_registration.fantasy_name,
@@ -70,7 +69,7 @@ async def register_company(company_registration: CompanyRegistration):
 
         await company.insert()
 
-        return {'detail': f'Company registered with name: {company.name}!'}
+        return {'message': f'Company registered with name: {company.name}!'}
 
     except HTTPException as http_error:
         raise http_error
@@ -103,7 +102,13 @@ async def xml_test(upload_file: UploadFile = None, cnpj: str = Header(...)):
                 response_dict=response_dict
             )
 
-            await company_exists(cnpj)
+            company_exists_result = await company_exists(cnpj)
+
+            if not company_exists_result:
+                raise HTTPException(status_code=400, detail={
+                    'message': 'Company not registered!'
+                })
+
             await check_duplicates(cnpj, xml_file_list)
 
             await insert_nfe(cnpj, list_nfe_json=xml_file_list)

@@ -22,9 +22,13 @@ Tornar o sistema auditável.
 
 - [ ] - Escrever testes para o sistema.
 
-```text
-Documentando a API
-```
+## Todo Refatorações necessárias
+
+- [ ] - Adicionar a lib path para lidar com caminhos de arquivos, isso irá garantir o funcionamento em qualquer sistema.
+
+- [ ] - Separar as rotas em arquivos utilizando o APIRouter do fastapi.
+
+## Todo documentando a api
 
 - [ ] - Adicionar tags nas rotas.
 
