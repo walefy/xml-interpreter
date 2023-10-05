@@ -1,6 +1,6 @@
 # Projeto x
 
-## Todo XML
+## [ Todo ] XML
 
 ```text
 Tornar o sistema auditável.
@@ -22,13 +22,13 @@ Tornar o sistema auditável.
 
 - [ ] - Escrever testes para o sistema.
 
-## Todo Refatorações necessárias
+## [ Todo ] Refatorações necessárias
 
 - [ ] - Adicionar a lib path para lidar com caminhos de arquivos, isso irá garantir o funcionamento em qualquer sistema.
 
 - [ ] - Separar as rotas em arquivos utilizando o APIRouter do fastapi.
 
-## Todo documentando a api
+## [ Todo ] documentando a api
 
 - [ ] - Adicionar tags nas rotas.
 
