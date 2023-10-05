@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Any, Optional
 from beanie import Document
+from typing import Literal
 
 
 class Address(BaseModel):
@@ -39,19 +40,21 @@ class NFE(BaseModel):
     products: list[Product]
 
 
+class MissingInvoice(BaseModel):
+    number: int
+    serie: int
+
+
 class Company(Document):
     fantasy_name: str
     name: str
     cnpj: str
     # address: Address
+    with_gap: bool = False
+    missing_invoices: list[MissingInvoice] = []
     ie: str
-    crt: str  # TODO: Deixar opções pre definidas aqui.
+    crt: Literal['Simples Nacional', 'Lucro Presumido', 'Lucro Real']
     nfes: list[NFE] = []
-
-
-class MissingInvoice(BaseModel):
-    number: int
-    serie: int
 
 
 class CompanyRegistration(BaseModel):
@@ -60,6 +63,4 @@ class CompanyRegistration(BaseModel):
     cnpj: str
     ie: str
     crt: str
-    with_gap: bool = False
-    missing_invoices: list[MissingInvoice] = []
     # address: Address
