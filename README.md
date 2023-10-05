@@ -28,6 +28,8 @@ Tornar o sistema auditável.
 
 - [ ] - Separar as rotas em arquivos utilizando o APIRouter do fastapi.
 
+- [ ] - Mudar o padrão de projeto
+
 ## [ Todo ] documentando a api
 
 - [ ] - Adicionar tags nas rotas.
