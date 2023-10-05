@@ -16,3 +16,4 @@ async def init_db():
     db = client['x_app']
 
     await init_beanie(database=db, document_models=[Company])
+    await Company.get_motor_collection().create_index('cnpj', unique=True)

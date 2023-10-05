@@ -15,7 +15,7 @@ from models.company import CompanyRegistration, Company
 app = FastAPI(title='XML Validator', version='1.0.0')
 
 
-@app.on_event("startup")
+@app.on_event('startup')
 async def startup():
     await init_db()
 
@@ -53,29 +53,29 @@ async def http_exception_handler(_: Request, exc: HTTPException):
 
 @app.post('/company', status_code=status.HTTP_201_CREATED)
 async def register_company(company_registration: CompanyRegistration):
-    try:
-        if await company_exists(company_registration.cnpj):
-            raise HTTPException(status_code=400, detail={
-                'message': 'This CNPJ already registered!'
-            })
+    # try:
+    if await company_exists(company_registration.cnpj):
+        raise HTTPException(status_code=400, detail={
+            'message': 'This CNPJ already registered!'
+        })
 
-        company = Company(
-            fantasy_name=company_registration.fantasy_name,
-            name=company_registration.name,
-            cnpj=company_registration.cnpj,
-            ie=company_registration.ie,
-            crt=company_registration.crt,
-        )
+    company = Company(
+        fantasy_name=company_registration.fantasy_name,
+        name=company_registration.name,
+        cnpj=company_registration.cnpj,
+        ie=company_registration.ie,
+        crt=company_registration.crt,
+    )
 
-        await company.insert()
+    await company.insert()
 
-        return {'message': f'Company registered with name: {company.name}!'}
+    return {'message': f'Company registered with name: {company.name}!'}
 
-    except HTTPException as http_error:
-        raise http_error
+    # except HTTPException as http_error:
+    #     raise http_error
 
-    except Exception as error:
-        raise HTTPException(status_code=500, detail=str(error))
+    # except Exception as error:
+    #     raise HTTPException(status_code=500, detail=str(error))
 
 
 @app.post('/xmltest', status_code=status.HTTP_201_CREATED)

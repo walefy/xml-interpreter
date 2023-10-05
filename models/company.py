@@ -62,5 +62,5 @@ class CompanyRegistration(BaseModel):
     name: str
     cnpj: str
     ie: str
-    crt: str
+    crt: Literal['Simples Nacional', 'Lucro Presumido', 'Lucro Real']
     # address: Address
