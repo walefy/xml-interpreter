@@ -9,8 +9,12 @@ from crud import insert_nfe
 from db.database import init_db
 from models.company import Company, CompanyRegistration
 from utils import read_all_xml_files, unzip_file
-from validations import (check_duplicates, company_exists,
-                         compare_cnpj_in_all_files, verify_sequence_with_gap)
+from validations import (
+    check_duplicates,
+    company_exists,
+    compare_cnpj_in_all_files,
+    verify_sequence_with_gap
+)
 
 app = FastAPI(title='XML Validator', version='1.0.0')
 
