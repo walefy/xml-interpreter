@@ -1,12 +1,11 @@
-from httpx import AsyncClient
-from fastapi import status
-
 import pytest
 import pytest_asyncio
+from fastapi import status
+from httpx import AsyncClient
 
 from main import app
-from tests.helpers import init_mock_mongodb_beanie
 from models.company import Company
+from tests.helpers import init_mock_mongodb_beanie
 
 
 @pytest_asyncio.fixture(autouse=True)

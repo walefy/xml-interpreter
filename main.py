@@ -1,16 +1,16 @@
-from fastapi import FastAPI, Header, UploadFile, HTTPException, Request, status
-from fastapi.responses import JSONResponse
+from os import mkdir, path
 from shutil import rmtree
-from os import path, mkdir
-import xmltodict
 
-from utils import unzip_file, read_all_xml_files
-from validations import compare_cnpj_in_all_files, check_duplicates
-from validations import verify_sequence_with_gap
-from validations import company_exists
-from db.database import init_db
+import xmltodict
+from fastapi import FastAPI, Header, HTTPException, Request, UploadFile, status
+from fastapi.responses import JSONResponse
+
 from crud import insert_nfe
-from models.company import CompanyRegistration, Company
+from db.database import init_db
+from models.company import Company, CompanyRegistration
+from utils import read_all_xml_files, unzip_file
+from validations import (check_duplicates, company_exists,
+                         compare_cnpj_in_all_files, verify_sequence_with_gap)
 
 app = FastAPI(title='XML Validator', version='1.0.0')
 

@@ -1,5 +1,5 @@
-from mongomock_motor import AsyncMongoMockClient
 from beanie import init_beanie
+from mongomock_motor import AsyncMongoMockClient
 
 
 async def init_mock_mongodb_beanie(document_models: list = []):

@@ -1,8 +1,8 @@
 from fastapi import HTTPException
 
-from utils import get_nested_value
-from models.xml_models import XmlModel
 from models.company import Company
+from models.xml_models import XmlModel
+from utils import get_nested_value
 
 
 def compare_cnpj(cnpj: str, xml_dict: dict, xml_file_name: str):

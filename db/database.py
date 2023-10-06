@@ -1,7 +1,9 @@
+import os
+
 from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
+
 from models.company import Company
-import os
 
 
 async def init_db():

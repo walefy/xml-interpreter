@@ -1,7 +1,7 @@
-from pydantic import BaseModel
-from typing import Any, Optional
+from typing import Any, Literal, Optional
+
 from beanie import Document
-from typing import Literal
+from pydantic import BaseModel
 
 
 class Address(BaseModel):
