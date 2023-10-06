@@ -85,10 +85,10 @@ async def test_send_zip_file_with_gap():
             {
                 'message': 'There are missing invoices!',
                 'missing_invoices': [
-                    {'invoice_number': 3, 'serie': '3'},
-                    {'invoice_number': 4, 'serie': '3'},
-                    {'invoice_number': 66, 'serie': '2'},
-                    {'invoice_number': 67, 'serie': '2'},
+                    {'invoice_number': 3, 'serie': 3},
+                    {'invoice_number': 4, 'serie': 3},
+                    {'invoice_number': 66, 'serie': 2},
+                    {'invoice_number': 67, 'serie': 2},
                 ]
             },
         ],
