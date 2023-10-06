@@ -15,6 +15,7 @@ uvicorn = "^0.23.2"
 xmltodict = "^0.13.0"
 
 [tool.poetry.group.dev.dependencies]
+flake8 = "^6.1.0"
 httpx = "^0.25.0"
 mongomock-motor = "^0.0.21"
 pytest = "^7.4.2"
