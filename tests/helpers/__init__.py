@@ -1,0 +1,1 @@
+from .mock_mongodb_beanie import init_mock_mongodb_beanie

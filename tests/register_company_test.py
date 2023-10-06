@@ -1,22 +1,18 @@
 from httpx import AsyncClient
-from mongomock_motor import AsyncMongoMockClient
-from beanie import init_beanie
 from fastapi import status
 
 import pytest
 import pytest_asyncio
 
 from main import app
+from tests.helpers import init_mock_mongodb_beanie
 from models.company import Company
 
 
 @pytest_asyncio.fixture(autouse=True)
 async def mock_mongodb():
-    client = AsyncMongoMockClient()
-    await init_beanie(
-        document_models=[Company],
-        database=client.get_database(name='test_db')
-    )
+    document_models = [Company]
+    await init_mock_mongodb_beanie(document_models)
 
 
 @pytest.mark.asyncio
