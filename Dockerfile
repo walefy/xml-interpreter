@@ -2,6 +2,8 @@ FROM python:3.11.0-alpine3.17
 
 WORKDIR /app
 
+EXPOSE 8000
+
 COPY pyproject.toml poetry.lock ./
 
 RUN curl -sSL https://install.python-poetry.org | python3 -
