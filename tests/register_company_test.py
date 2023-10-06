@@ -45,7 +45,7 @@ async def test_register_two_companies_with_same_cnpj():
     }
 
     async with AsyncClient(app=app, base_url='http://test') as async_client:
-        response = await async_client.post('/company', json=default_company)
+        await async_client.post('/company', json=default_company)
         response = await async_client.post('/company', json=default_company)
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
