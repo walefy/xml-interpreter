@@ -2,8 +2,7 @@ FROM python:3.11.0-alpine3.17
 
 WORKDIR /app
 
-COPY pyproject.toml .
-COPY poetry.lock .
+COPY pyproject.toml poetry.lock ./
 
 RUN curl -sSL https://install.python-poetry.org | python3 -
 RUN pip install poetry
