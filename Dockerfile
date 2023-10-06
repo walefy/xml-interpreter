@@ -2,9 +2,14 @@ FROM python:3.11.0-alpine3.17
 
 WORKDIR /app
 
-COPY requirements.txt .
+COPY pyproject.toml .
+COPY poetry.lock .
 
-RUN pip install --no-cache-dir --upgrade -r requirements.txt
+RUN curl -sSL https://install.python-poetry.org | python3 -
+RUN pip install poetry
+
+RUN poetry config virtualenvs.create false \
+  && poetry install --no-dev --no-interaction --no-ansi
 
 COPY . .
 
