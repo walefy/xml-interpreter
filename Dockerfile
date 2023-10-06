@@ -6,7 +6,6 @@ EXPOSE 8000
 
 COPY pyproject.toml poetry.lock ./
 
-RUN curl -sSL https://install.python-poetry.org | python3 -
 RUN pip install poetry
 
 RUN poetry config virtualenvs.create false \
