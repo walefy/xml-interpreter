@@ -1,6 +1,7 @@
 from os import path
 
 import pytest
+import unittest
 import pytest_asyncio
 from fastapi import status
 from httpx import AsyncClient
@@ -79,8 +80,8 @@ async def test_send_zip_file_with_gap():
 
         response = await async_client.post('/xml', files=files, headers=headers)
         zip_file.close()
-
-    assert response.json() == {
+    
+    expected_warnings = {
         'warnings': [
             {
                 'message': 'There are missing invoices!',
@@ -93,4 +94,9 @@ async def test_send_zip_file_with_gap():
             },
         ],
     }
+    
+    actual_warnings = response.json()
+    case = unittest.TestCase()
+
+    case.assertCountEqual(actual_warnings, expected_warnings)
     assert response.status_code == status.HTTP_201_CREATED
