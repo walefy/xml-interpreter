@@ -24,12 +24,14 @@ Este é um projeto para analisar e armazenar informações de notas fiscais. O p
 
 Primeiro verifique se tem o [docker](https://www.docker.com/get-started/) e o [docker-compose](https://docs.docker.com/compose/install/) instalado.
 
-com as duas ferramentas instaladas basta digitar o seguinte comando na raiz do projeto:
+Agora renomeie o arquivo ```.env.example``` para ```.env```
+
+Com as duas ferramentas instaladas basta digitar o seguinte comando na raiz do projeto:
 
 ```bash
 docker-compose up --build
 ```
 
-após esse comando a api vai subir no ```localhost``` utilizando a porta ```8000```.
+Após esse comando a api vai subir no ```localhost``` utilizando a porta ```8000```.
 
-você pode testar se a api está funcionando acessando o endpoint ```http://localhost:8000/docs```
+Você pode testar se a api está funcionando acessando o endpoint ```http://localhost:8000/docs```
