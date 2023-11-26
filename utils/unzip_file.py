@@ -1,5 +1,5 @@
-from zipfile import ZipFile
 from os import mkdir
+from zipfile import ZipFile
 
 
 def unzip_file(file, folder_name: str):

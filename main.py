@@ -1,21 +1,25 @@
-from fastapi import FastAPI, Header, UploadFile, HTTPException, Request, status
-from fastapi.responses import JSONResponse
+from os import mkdir, path
 from shutil import rmtree
-from os import path, mkdir
-import xmltodict
 
-from utils import unzip_file, read_all_xml_files
-from validations import compare_cnpj_in_all_files, check_duplicates
-from validations import verify_sequence_with_gap
-from validations import company_exists
-from db.database import init_db
+import xmltodict
+from fastapi import FastAPI, Header, HTTPException, Request, UploadFile, status
+from fastapi.responses import JSONResponse
+
 from crud import insert_nfe
-from models.company import CompanyRegistration, Company
+from db.database import init_db
+from models.company import Company, CompanyRegistration
+from utils import read_all_xml_files, unzip_file
+from validations import (
+    check_duplicates,
+    company_exists,
+    compare_cnpj_in_all_files,
+    verify_sequence_with_gap
+)
 
 app = FastAPI(title='XML Validator', version='1.0.0')
 
 
-@app.on_event("startup")
+@app.on_event('startup')
 async def startup():
     await init_db()
 
@@ -78,7 +82,7 @@ async def register_company(company_registration: CompanyRegistration):
         raise HTTPException(status_code=500, detail=str(error))
 
 
-@app.post('/xmltest', status_code=status.HTTP_201_CREATED)
+@app.post('/xml', status_code=status.HTTP_201_CREATED)
 async def xml_test(upload_file: UploadFile = None, cnpj: str = Header(...)):
     try:
         if upload_file is None:

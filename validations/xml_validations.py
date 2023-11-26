@@ -1,8 +1,8 @@
 from fastapi import HTTPException
 
-from utils import get_nested_value
-from models.xml_models import XmlModel
 from models.company import Company
+from models.xml_models import XmlModel
+from utils import get_nested_value
 
 
 def compare_cnpj(cnpj: str, xml_dict: dict, xml_file_name: str):
@@ -64,8 +64,8 @@ def verify_sequence_with_gap(xml_list: list[XmlModel], response_dict: dict | Non
             if correct_next_number != real_next_number:
                 for gap_index in range(correct_next_number, real_next_number):
                     missing_invoices.append({
-                        'serie': serie,
-                        'invoice_number': gap_index
+                        'serie': int(serie),
+                        'invoice_number': int(gap_index)
                     })
 
     if len(missing_invoices) > 0:

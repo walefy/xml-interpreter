@@ -1,0 +1,38 @@
+[tool.poetry]
+authors = ["walefy <walefyd1@gmail.com>"]
+description = ""
+name = "xml-interpreter"
+readme = "README.md"
+version = "0.1.0"
+
+[tool.isort]
+multi_line_output = 3
+
+[tool.taskipy.tasks]
+coverage = "pytest -W ignore::DeprecationWarning --cov=./ --cov-config=.coveragerc tests/ && rm .coverage"
+isort = "isort ."
+lint = "flake8"
+test = "pytest -W ignore::DeprecationWarning"
+
+[tool.poetry.dependencies]
+beanie = "^1.22.6"
+fastapi = "^0.103.2"
+gunicorn = "^21.2.0"
+python = "^3.11"
+python-multipart = "^0.0.6"
+uvicorn = "^0.23.2"
+xmltodict = "^0.13.0"
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^6.1.0"
+httpx = "^0.25.0"
+isort = "^5.12.0"
+mongomock-motor = "^0.0.21"
+pytest = "^7.4.2"
+pytest-asyncio = "^0.21.1"
+pytest-cov = "^4.1.0"
+taskipy = "^1.12.2"
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]

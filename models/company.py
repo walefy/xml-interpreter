@@ -1,7 +1,7 @@
-from pydantic import BaseModel
-from typing import Any, Optional
+from typing import Any, Literal, Optional
+
 from beanie import Document
-from typing import Literal
+from pydantic import BaseModel
 
 
 class Address(BaseModel):
@@ -62,5 +62,5 @@ class CompanyRegistration(BaseModel):
     name: str
     cnpj: str
     ie: str
-    crt: str
+    crt: Literal['Simples Nacional', 'Lucro Presumido', 'Lucro Real']
     # address: Address

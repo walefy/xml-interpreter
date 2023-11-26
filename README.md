@@ -6,6 +6,8 @@
 Tornar o sistema auditável.
 ```
 
+- [ ] - Verificar se o cnpj é válido
+
 - [ ] - Sistema de gap.
 
 - [ ] - Sistema de usuário com níveis de hierarquia.
@@ -37,5 +39,7 @@ Tornar o sistema auditável.
 - [ ] - Criar uma class schema para a resposta, isso implica em padronizar a resposta dos endpoints.
 
 - [ ] - Escrever um readme explicando os Schemas.
+
+- [ ] - Documentar as funções auxiliares
 
 ## Regras de projeto
