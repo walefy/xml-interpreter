@@ -82,7 +82,7 @@ async def register_company(company_registration: CompanyRegistration):
         raise HTTPException(status_code=500, detail=str(error))
 
 
-@app.post('/xmltest', status_code=status.HTTP_201_CREATED)
+@app.post('/xml', status_code=status.HTTP_201_CREATED)
 async def xml_test(upload_file: UploadFile = None, cnpj: str = Header(...)):
     try:
         if upload_file is None:

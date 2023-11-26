@@ -50,7 +50,7 @@ async def test_send_zip_with_invoices():
             'cnpj': '40028176000176'
         }
 
-        response = await async_client.post('/xmltest', files=files, headers=headers)
+        response = await async_client.post('/xml', files=files, headers=headers)
         zip_file.close()
 
     assert response.json() == {'warnings': []}
@@ -77,7 +77,7 @@ async def test_send_zip_file_with_gap():
             'cnpj': '40028176000176'
         }
 
-        response = await async_client.post('/xmltest', files=files, headers=headers)
+        response = await async_client.post('/xml', files=files, headers=headers)
         zip_file.close()
 
     assert response.json() == {
