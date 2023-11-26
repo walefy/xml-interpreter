@@ -4,7 +4,7 @@ def get_nested_value(list_key: tuple[str, ...], entry_dict: dict):
     for key in list_key:
         if isinstance(response, dict):
             response = response.get(key, {})
-        else:
+        else: 
             raise ValueError(f'Key {key} not found')
 
     return response
