@@ -1,45 +1,35 @@
-# Projeto x
+# Projeto XML INTERPRETER
 
-## [ Todo ] XML
+## Intro
 
-```text
-Tornar o sistema auditável.
+Este é um projeto para analisar e armazenar informações de notas fiscais. O projeto ainda está em beta então não é recomendado o uso em casos reais!
+
+## Features atuais
+
+- [x] Identificação de notas faltantes
+- [x] Manter registro de empresas
+- [x] Verificação de cnpj nas notas
+- [x] Verificação de notas duplicadas
+- [x] Aceita várias notas no formato zip
+
+## Tecnologias utilizadas
+
+1. [MongoDB](https://www.mongodb.com/pt-br) Para o banco de dados não relacional
+2. [FastAPI](https://fastapi.tiangolo.com/pt/) Para criação da api
+3. [xmltodict](https://github.com/martinblech/xmltodict) Para fazer a conversão de xml para dicionário do python.
+4. [beanie](https://beanie-odm.dev/) Para mapear os objetos do banco (ODM)
+5. [pytest](https://docs.pytest.org/en/7.4.x/) para escrever e rodar os testes da aplicação
+
+## Como rodar
+
+Primeiro verifique se tem o [docker](https://www.docker.com/get-started/) e o [docker-compose](https://docs.docker.com/compose/install/) instalado.
+
+com as duas ferramentas instaladas basta digitar o seguinte comando na raiz do projeto:
+
+```bash
+docker-compose up --build
 ```
 
-- [ ] - Verificar se o cnpj é válido
+após esse comando a api vai subir no ```localhost``` utilizando a porta ```8000```.
 
-- [ ] - Sistema de gap.
-
-- [ ] - Sistema de usuário com níveis de hierarquia.
-
-- [ ] - Registro de alterações de informações.
-
-- [ ] - Filtros diversos para XML.
-
-- [ ] - Filtros pre-estabelecidos para determinadas funções.
-
-- [ ] - Gerador de relatórios em csv
-
-- [ ] - Validar segurança do projeto.
-
-- [ ] - Escrever testes para o sistema.
-
-## [ Todo ] Refatorações necessárias
-
-- [ ] - Adicionar a lib path para lidar com caminhos de arquivos, isso irá garantir o funcionamento em qualquer sistema.
-
-- [ ] - Separar as rotas em arquivos utilizando o APIRouter do fastapi.
-
-- [ ] - Mudar o padrão de projeto
-
-## [ Todo ] documentando a api
-
-- [ ] - Adicionar tags nas rotas.
-
-- [ ] - Criar uma class schema para a resposta, isso implica em padronizar a resposta dos endpoints.
-
-- [ ] - Escrever um readme explicando os Schemas.
-
-- [ ] - Documentar as funções auxiliares
-
-## Regras de projeto
+você pode testar se a api está funcionando acessando o endpoint ```http://localhost:8000/docs```
