@@ -7,7 +7,7 @@ class TestItem:
 
     def __init__(self, name: str, passed: Literal['passed', 'failed']):
         self.name = name
-        self.passed = passed.lower() == 'passed'
+        self.passed = passed == 'passed'
 
     def __str__(self) -> str:
         return f' TestItem (name = {self.name}, passed = {self.passed})'
@@ -21,7 +21,8 @@ def generate_report():
             if line.startswith('test'):
                 test = line.split(' ')
                 test_name = test[0].split('::')[1]
-                test = TestItem(test_name, test[1])
+                test_passed = test[1].lower()
+                test = TestItem(test_name, test_passed)
                 tests.append(test)
 
             if line.strip().endswith('[100%]'):
