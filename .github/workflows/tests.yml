@@ -32,9 +32,5 @@ jobs:
       - name: Commet Report PR
         uses: thollander/actions-comment-pull-request@v2
         with:
-          message: |
-            Test Results:
-            ```markdown
-            $(cat report.md)
-            ```
+          filePath: ./md_report.md
           GITHUB_TOKEN: ${{ secrets.COMMET_PR_GITHUB_TOKEN }}
