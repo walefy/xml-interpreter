@@ -8,7 +8,7 @@ Tornar o sistema auditável.
 
 - [ ] - Verificar se o cnpj é válido
 
-- [ ] - Sistema de gap.
+- [x] - Sistema de gap.
 
 - [ ] - Sistema de usuário com níveis de hierarquia.
 
