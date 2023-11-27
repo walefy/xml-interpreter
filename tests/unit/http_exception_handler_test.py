@@ -1,7 +1,9 @@
-import pytest
 from unittest.mock import Mock, patch
-from main import http_exception_handler
+
+import pytest
 from fastapi import HTTPException, Request
+
+from main import http_exception_handler
 from utils import Logger
 
 

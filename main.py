@@ -1,14 +1,13 @@
 from os import path
 from shutil import rmtree
 
-import xmltodict
 from fastapi import FastAPI, Header, HTTPException, Request, UploadFile, status
 from fastapi.responses import JSONResponse
 
 from crud import insert_nfe
 from db.database import init_db
 from models.company import Company, CompanyRegistration
-from utils import read_all_xml_files, unzip_file, Logger
+from utils import Logger, read_all_xml_files, unzip_file
 from validations import (
     check_duplicates,
     company_exists,
@@ -83,11 +82,7 @@ async def register_company(company_registration: CompanyRegistration):
 async def xml_interpreter(upload_file: UploadFile = None, cnpj: str = Header(...)):
     try:
         if upload_file is None:
-            raise HTTPException(status_code=400, detail='xml file not found!')
-
-        if upload_file.filename.endswith('.xml'):
-            doc = xmltodict.parse(upload_file.file.read())
-            return doc
+            raise HTTPException(status_code=400, detail={'detail': 'xml file not found!'})
 
         if upload_file.filename.endswith('.zip'):
             response_dict = {
@@ -117,7 +112,7 @@ async def xml_interpreter(upload_file: UploadFile = None, cnpj: str = Header(...
             return response_dict
 
         else:
-            raise HTTPException(status_code=400, detail='xml file not found!')
+            raise HTTPException(status_code=400, detail={'detail': 'file must be a zip!'})
 
     except HTTPException as http_error:
         raise http_error
