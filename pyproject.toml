@@ -13,7 +13,7 @@ coverage = "pytest -W ignore::DeprecationWarning --cov=./ --cov-config=.coverage
 coverage-html = "pytest -W ignore::DeprecationWarning --cov=./ --cov-config=.coveragerc tests/ && coverage html && rm -rf .coverage"
 isort = "isort ."
 lint = "flake8"
-report-md = "pytest -W ignore::DeprecationWarning -vv > report.txt && cat report.txt && python ./tests/helpers/generate_report.py && rm report.txt"
+report-md = "pytest -W ignore::DeprecationWarning -vv > report.txt ; cat report.txt ; python ./tests/helpers/generate_report.py ; rm report.txt"
 test = "pytest -W ignore::DeprecationWarning -vv"
 
 [tool.poetry.dependencies]
@@ -30,10 +30,10 @@ flake8 = "^6.1.0"
 httpx = "^0.25.0"
 isort = "^5.12.0"
 mongomock-motor = "^0.0.21"
+pytest = "^7.4.3"
 pytest-asyncio = "^0.21.1"
 pytest-cov = "^4.1.0"
 taskipy = "^1.12.2"
-pytest = "^7.4.3"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
