@@ -26,8 +26,15 @@ jobs:
       - name: Run Flake8
         run: poetry run flake8 .
       
+      - name: Run tests
+        run: pytest -W ignore::DeprecationWarning -vv > report.txt
+
       - name: Generate report
-        run: poetry run task report-md
+        run: |
+          cat report.txt
+          python ./tests/helpers/generate_report.py
+          rm report.txt
+        continue-on-error: true
 
       - name: Commet Report PR
         uses: thollander/actions-comment-pull-request@v2
