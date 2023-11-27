@@ -29,10 +29,15 @@ def generate_report():
                 break
 
     with open('report.md', 'w') as file:
-        file.write('*name* | *passed*\n')
-        file.write('--- | ---\n')
+        file.write('| *name* | *passed* |\n')
+        file.write('| --- | --- |\n')
         for test in tests:
-            file.write(f'{test.name} | {"✅" if test.passed else "❌"}\n')
+            if test.passed:
+                emoji = ':heavy_check_mark:'
+            else:
+                emoji = ':heavy_multiplication_x:'
+
+            file.write(f'| {test.name} | {emoji} |\n')
 
 
 generate_report()
