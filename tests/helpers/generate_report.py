@@ -20,7 +20,6 @@ def generate_report():
         for line in file.readlines():
             if line.startswith('test'):
                 test = line.split(' ')
-                print(line)
                 test_name = test[0].split('::')[1]
                 test = TestItem(test_name, test[1])
                 tests.append(test)
