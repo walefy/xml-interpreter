@@ -1,6 +1,7 @@
+from unittest.mock import AsyncMock, Mock
+
 import pytest
 import pytest_asyncio
-from unittest.mock import AsyncMock, Mock
 
 from crud import insert_nfe
 from models.company import Company
