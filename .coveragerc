@@ -1,2 +1,5 @@
 [run]
-omit = tests/*
+omit = tests/*,db/database.py,__init__.py
+
+[report]
+show_missing = True
