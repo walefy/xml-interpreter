@@ -1,7 +1,7 @@
+import unittest
 from os import path
 
 import pytest
-import unittest
 import pytest_asyncio
 from fastapi import status
 from httpx import AsyncClient
@@ -36,6 +36,7 @@ async def test_send_zip_with_invoices():
     async with AsyncClient(app=app, base_url='http://test') as async_client:
         path_to_zip_file = path.join(
             path.dirname(__file__),
+            '..',
             'data',
             'minimal_no_gap.zip'
         )
@@ -63,6 +64,7 @@ async def test_send_zip_file_with_gap():
     async with AsyncClient(app=app, base_url='http://test') as async_client:
         path_to_zip_file = path.join(
             path.dirname(__file__),
+            '..',
             'data',
             'minimal_with_gap.zip'
         )

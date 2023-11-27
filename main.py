@@ -1,4 +1,4 @@
-from os import mkdir, path
+from os import path
 from shutil import rmtree
 
 import xmltodict
@@ -8,7 +8,7 @@ from fastapi.responses import JSONResponse
 from crud import insert_nfe
 from db.database import init_db
 from models.company import Company, CompanyRegistration
-from utils import read_all_xml_files, unzip_file
+from utils import read_all_xml_files, unzip_file, Logger
 from validations import (
     check_duplicates,
     company_exists,
@@ -38,11 +38,8 @@ async def clean_folder(request: Request, call_next):
 @app.exception_handler(HTTPException)
 async def http_exception_handler(_: Request, exc: HTTPException):
     if exc.status_code == 500:
-        if not path.exists('./logs'):
-            mkdir('./logs')
-
-        with open('./logs/error_log.txt', 'a') as f:
-            f.write(exc.detail + '\n')
+        logger = Logger(folder=path.abspath('./logs'))
+        logger.log(exc.detail)
 
         return JSONResponse(
             status_code=exc.status_code,
@@ -83,7 +80,7 @@ async def register_company(company_registration: CompanyRegistration):
 
 
 @app.post('/xml', status_code=status.HTTP_201_CREATED)
-async def xml_test(upload_file: UploadFile = None, cnpj: str = Header(...)):
+async def xml_interpreter(upload_file: UploadFile = None, cnpj: str = Header(...)):
     try:
         if upload_file is None:
             raise HTTPException(status_code=400, detail='xml file not found!')
