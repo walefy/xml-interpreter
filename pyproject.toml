@@ -10,6 +10,7 @@ multi_line_output = 3
 
 [tool.taskipy.tasks]
 coverage = "pytest -W ignore::DeprecationWarning --cov=./ --cov-config=.coveragerc tests/ && rm .coverage"
+coverage-html = "pytest -W ignore::DeprecationWarning --cov=./ --cov-config=.coveragerc tests/ && coverage html && rm -rf .coverage"
 isort = "isort ."
 lint = "flake8"
 test = "pytest -W ignore::DeprecationWarning -vv"
@@ -31,6 +32,7 @@ mongomock-motor = "^0.0.21"
 pytest = "^7.4.2"
 pytest-asyncio = "^0.21.1"
 pytest-cov = "^4.1.0"
+pytest-md-report = "^0.5.0"
 taskipy = "^1.12.2"
 
 [build-system]
