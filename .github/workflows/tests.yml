@@ -27,12 +27,12 @@ jobs:
         run: poetry run flake8 .
       
       - name: Run tests
-        run: pytest -W ignore::DeprecationWarning -vv > report.txt
+        run: poetry run pytest -W ignore::DeprecationWarning -vv > report.txt
 
       - name: Generate report
         run: |
           cat report.txt
-          python ./tests/helpers/generate_report.py
+          poetry run python ./tests/helpers/generate_report.py
           rm report.txt
         continue-on-error: true
 
