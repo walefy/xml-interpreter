@@ -14,6 +14,7 @@ async def mock_mongodb():
     document_models = [Company]
     await init_mock_mongodb_beanie(document_models)
 
+
 @pytest.mark.asyncio
 async def test_insert_nfe_with_multiple_products():
     list_nfe_json = [
@@ -23,8 +24,12 @@ async def test_insert_nfe_with_multiple_products():
                     'NFe': {
                         'infNFe': {
                             'det': [
-                                {'prod': {'xProd': 'Product 1', 'vProd': '10.00'}, 'imposto': {}},
-                                {'prod': {'xProd': 'Product 2', 'vProd': '20.00'}, 'imposto': {}},
+                                {'prod': {'xProd': 'Product 1', 'vProd': '10.00'},
+                                 'imposto': {}
+                                 },
+                                {'prod': {'xProd': 'Product 2', 'vProd': '20.00'},
+                                 'imposto': {}
+                                 },
                             ],
                             'ide': {'nNF': '123', 'serie': '1'},
                         }
