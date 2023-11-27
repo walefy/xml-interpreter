@@ -31,7 +31,7 @@ def generate_report():
         file.write('| *name* | *passed* |\n')
         file.write('| --- | --- |\n')
         for test in tests:
-            file.write(f'| {test.name} | {"✅" if test.passed else "❌"} |\n')
+            file.write(f'| {test.name} | {" ✅ " if test.passed else " ❌ "} |\n')
 
 
 generate_report()
