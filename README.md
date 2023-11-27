@@ -34,4 +34,4 @@ docker-compose up --build
 
 Após esse comando a api vai subir no ```localhost``` utilizando a porta ```8000```.
 
-Você pode testar se a api está funcionando acessando o endpoint ```http://localhost:8000/docs```
+Você pode testar se a api está funcionando acessando o endpoint ```http://localhost:8000/docs```.
