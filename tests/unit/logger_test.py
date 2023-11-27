@@ -1,5 +1,5 @@
-from os import path
 import tempfile
+from os import path
 
 import pytest
 
