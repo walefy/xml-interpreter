@@ -188,3 +188,42 @@ async def test_make_request_with_invalid_file_extension():
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert response.json() == {'detail': 'file must be a zip!'}
+
+
+@pytest.mark.asyncio
+async def test_make_request_with_different_cnpj():
+    async with AsyncClient(app=app, base_url='http://test') as async_client:
+        path_to_zip_file = path.join(
+            path.dirname(__file__),
+            '..',
+            'data',
+            'minimal_no_gap.zip'
+        )
+
+        zip_file = open(path_to_zip_file, 'rb')
+
+        files = {
+            'upload_file': zip_file
+        }
+
+        headers = {
+            'Content-Type': 'multipart/form-data;boundary=boundary',
+            'cnpj': '40028176000177'
+        }
+
+        response = await async_client.post('/xml', files=files, headers=headers)
+        zip_file.close()
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.json()['message'] == 'The CNPJ is not match!'
+
+    not_match_files_expect = [
+        '63.xml',
+        '64.xml',
+        '65.xml',
+        '66.xml'
+    ]
+    not_match_files_actual = response.json()['files']
+
+    case = unittest.TestCase()
+    case.assertCountEqual(not_match_files_actual, not_match_files_expect)

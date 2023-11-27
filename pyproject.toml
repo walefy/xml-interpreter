@@ -12,7 +12,7 @@ multi_line_output = 3
 coverage = "pytest -W ignore::DeprecationWarning --cov=./ --cov-config=.coveragerc tests/ && rm .coverage"
 isort = "isort ."
 lint = "flake8"
-test = "pytest -W ignore::DeprecationWarning"
+test = "pytest -W ignore::DeprecationWarning -vv"
 
 [tool.poetry.dependencies]
 beanie = "^1.22.6"
