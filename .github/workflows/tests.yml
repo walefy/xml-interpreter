@@ -40,4 +40,4 @@ jobs:
         if: always()
         with:
           filePath: ./report.md
-          GITHUB_TOKEN: ${{ secrets.COMMET_PR_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
