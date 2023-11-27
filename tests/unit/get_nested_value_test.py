@@ -8,7 +8,7 @@ async def test_get_nested_value():
     list_key = ('a', 'b', 'c')
     entry_dict = {'a': {'b': {'c': 'test'}}}
 
-    assert get_nested_value(list_key, entry_dict) == 'test'
+    assert get_nested_value(list_key, entry_dict) == 'test intentional error'
 
 
 @pytest.mark.asyncio
