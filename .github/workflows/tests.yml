@@ -27,10 +27,10 @@ jobs:
         run: poetry run flake8 .
       
       - name: Generate report
-        run: poetry run pytest --md-report --md-report-flavor github --md-report-output md_report.md
+        run: poetry run task report-md
 
       - name: Commet Report PR
         uses: thollander/actions-comment-pull-request@v2
         with:
-          filePath: ./md_report.md
+          filePath: ./report.md
           GITHUB_TOKEN: ${{ secrets.COMMET_PR_GITHUB_TOKEN }}

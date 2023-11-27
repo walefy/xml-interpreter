@@ -13,6 +13,7 @@ coverage = "pytest -W ignore::DeprecationWarning --cov=./ --cov-config=.coverage
 coverage-html = "pytest -W ignore::DeprecationWarning --cov=./ --cov-config=.coveragerc tests/ && coverage html && rm -rf .coverage"
 isort = "isort ."
 lint = "flake8"
+report-md = "pytest -W ignore::DeprecationWarning -vv > report.txt && cat report.txt && python ./tests/helpers/generate_report.py && rm report.txt"
 test = "pytest -W ignore::DeprecationWarning -vv"
 
 [tool.poetry.dependencies]
