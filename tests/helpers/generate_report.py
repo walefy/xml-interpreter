@@ -39,7 +39,14 @@ def callback_transform(line: str) -> str:
     test_name = splitted_line[0].split('::')[1]
     test_passed = splitted_line[1].lower()
     test = TestItem(test_name, test_passed)
-    return f'{test.name} | {"✅" if test.passed else "❌"}'
+
+    emoji_map = {
+        'passed': '✅',
+        'failed': '❌',
+        'skipped': '⚠️'
+    }
+
+    return f'{test.name} | {emoji_map[test_passed]}'
 
 
 def generate_report():
@@ -49,7 +56,7 @@ def generate_report():
 
     lines = filter_lines(
         pytest_output,
-        ['PASSED', 'FAILED'],
+        ['PASSED', 'FAILED', 'SKIPPED'],
         callback_transform
     )
 
