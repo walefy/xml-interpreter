@@ -1,5 +1,5 @@
-from typing import Literal
 from os import popen
+from typing import Literal
 
 
 class TestItem:
